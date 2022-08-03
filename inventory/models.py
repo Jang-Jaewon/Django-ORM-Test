@@ -26,6 +26,7 @@ class Product(models.Model):
     updated_time = models.DateTimeField(auto_now=True)
     url = models.SlugField()
     is_active = models.BooleanField(default=True)
+    category = models.ForeignKey("Category", on_delete=models.CASCADE)
 
     class Meta:
         ordering = ["-id"]
