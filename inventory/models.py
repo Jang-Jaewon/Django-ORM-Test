@@ -5,8 +5,11 @@ class Brand(models.Model):
     brand_id = models.BigAutoField(primary_key=True)
     name = models.CharField("Brand Name", max_length=50)
 
+    class Meta:
+        verbose_name_plural = 'Brand'
+
     def __str__(self):
-        return f"Name: {self.name}"
+        return f"Brand name: {self.name}"
 
 
 class Category(models.Model):
@@ -16,7 +19,7 @@ class Category(models.Model):
         verbose_name_plural = 'Categories'
 
     def __str__(self):
-        return self.name
+        return f"Category name: {self.name}"
 
 
 class Product(models.Model):
@@ -26,10 +29,12 @@ class Product(models.Model):
     updated_time = models.DateTimeField(auto_now=True)
     url = models.SlugField()
     is_active = models.BooleanField(default=True)
-    category = models.ForeignKey("Category", on_delete=models.CASCADE)
+    # category = models.ForeignKey("Category", on_delete=models.CASCADE)
+    category = models.ManyToManyField("Category")
 
     class Meta:
         ordering = ["-id"]
+        verbose_name_plural = 'Product'
 
     def __str__(self):
         return f"Product name: {self.name}"
@@ -39,4 +44,5 @@ class Stock(models.Model):
     units = models.BigIntegerField()
     product = models.OneToOneField("Product", on_delete=models.CASCADE)
 
-
+    class Meta:
+        verbose_name_plural = 'Stock'
