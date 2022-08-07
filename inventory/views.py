@@ -1,3 +1,12 @@
-from django.shortcuts import render
+from django.db import IntegrityError
+from django.http import HttpResponse
+from .models import Brand
 
-# Create your views here.
+
+def new(request):
+    try:
+        Brand.objects.get(brand_id=100)
+    except Brand.DoesNotExist:
+        return HttpResponse("Sorry we couldn't find")
+
+    return HttpResponse("Hi")
