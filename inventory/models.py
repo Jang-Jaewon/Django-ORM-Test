@@ -14,6 +14,8 @@ class Brand(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
+    slug = models.SlugField(max_length=150, unique=True, blank=True, null=True)
+    is_active = models.BooleanField(default=False, blank=True, null=True)
 
     class Meta:
         verbose_name_plural = 'Categories'
