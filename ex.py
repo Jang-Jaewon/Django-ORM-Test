@@ -1,15 +1,15 @@
-# pip install pygments sqlparse
+# Django Shell
 
-from pygments import highlight
-from pygments.formatters import TerminalFormatter
-from pygments.lexers import PostgresLexer
-from sqlparse import format
-
-from inventory import Brand
+from inventory.models import Brand, Category
 
 Brand.objects.all().delete()
-Brand.objects.create(brand_id=1, name="nike")
 
-x = Brand.objects.filter(brand_id=1)
-sqlformatted = format(str(x.query), reindent=True)
-print(highlight(sqlformatted, PostgresLexer(), TerminalFormatter()))
+Brand.objects.create(brand_id=1, name="Nike")
+
+Brand(brand_id=1, name="Nike2").save()
+
+Category.objects.all().delete()
+
+Category.objects.create(name="Trainers", slug="trainers", is_active=True)
+
+Category(id=3, name="Trainers100", slug="trainers2", is_active=True).save()
