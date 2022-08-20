@@ -1,42 +1,38 @@
 # Django Shell
 import datetime
 from inventory.models import Product, ProductInventory, ProductType, Brand, Category
-from django.db import connection
+from django.db import connection, reset_queries
 
 ProductInventory.objects.all().delete()
 Brand.objects.all().delete()
 Product.objects.all().delete()
 ProductType.objects.all().delete()
+Category.objects.all().delete()
+
+reset_queries() \
 
 x = Product(web_id="1234", slug="ex1", name="ex3", description="ex3", is_active=True)
 x.save()
 y = Category(name="Flip-Flops", slug="fliplops", is_active=True)
 y.save()
+connection.queries
 
-x = Product(web_id="12346", slug="ex10", name="ex10", description="ex10", is_active=True)
-x.save()
-
+reset_queries()
 x.category.add(y)
-
-x = Product(web_id="123467", slug="ex100", name="ex100", description="ex100", is_active=True)
-x.save()
-
-x = Product.objects.get(id=4)
-y = Category.objects.get(id=1)
-
-x.category.add(y)
-x.category.all()
+connection.queries
+"""
+[{'sql': 'BEGIN', 'time': '0.000'}, 
+{'sql': 'INSERT OR IGNORE INTO "inventory_product_category" ("product_id", "category_id") SELECT 6, 3', 'time': '0.001'}]
+"""
 
 
-y = Category(name="cate2", slug="cate2", is_active=True)
-y.save()
-x.category.add(Category.objects.get(id=2))
-x.category.all()
+# SQL로 ManyToManyField INSET
+cusror = connection.cursor()
+cusror.execute("INSERT INTO inventory_product (web_id,slug,name,description,is_active,created_at,updated_at) VALUES (%s,%s,%s,%s,%s,%s,%s)", ['12345', 'ex4', 'ex4', 'ex4', True, '2022-05-31 16:08:08.725532', '2022-05-31 16:08:08.725532'])
+cusror.execute("INSERT INTO inventory_category (name,slug,is_active) VALUES (%s,%s,%s)", ['Flip-Flops', 'flipflops', True])
+Product.objects.first().id # 7
+Category.objects.first().id # 4
+cusror.execute("INSERT INTO inventory_product_category (product_id, category_id) VALUES (%s,%s)", [7, 4])
 
-x = Product(web_id="1010", slug="ex7", name="ex7", description="ex7", is_active=True)
-x.save()
-x.category.all()
-
-y = Category.objects.all()
-x.category.add(*y)
-x.category.all()
+p = Product.objects.first()
+p.category.all()
