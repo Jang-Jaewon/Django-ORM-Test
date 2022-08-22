@@ -28,4 +28,4 @@ reset_queries()
 
 Brand(brand_id=1000, name="Nike1000").save()
 connection.queries
-reset_queries() 
+reset_queries()
